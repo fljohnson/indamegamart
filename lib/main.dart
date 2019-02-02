@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  Shoplist _currentList; //need an immutable holder
+  final List<Shoplist> _currentList = []; //need an immutable holder
 
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -74,9 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Shoplist> lines = [];
 
-  String get listTitle => (widget._currentList == null) ?
+  String get listTitle => (widget._currentList.isEmpty) ?
     "Please create a list":
-   widget._currentList.name;
+   widget._currentList[0].name;
 
 
   @override
@@ -86,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
         addWaker(() {
           Shoplist.getIthList(0).then((nuList){
             setState(() {
-              widget._currentList = nuList;
+              widget._currentList.clear();
+              widget._currentList.add(nuList);
             });
 
           });
@@ -141,7 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
           return newList.length;
         }).then((aha){
           setState((){
-            widget._currentList = result;
+            widget._currentList.clear();
+            widget._currentList.add(result);
           });
         });
 
@@ -194,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget plannedTotalRow()
   {
-    String total= (widget._currentList == null) ? "0.00" : widget._currentList.strPlannedTotal();
+    String total= (widget._currentList == null) ? "0.00" : widget._currentList[0].strPlannedTotal();
 
     return Row(
         mainAxisAlignment:MainAxisAlignment.center,
@@ -207,9 +209,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget currentTotalRow()
   {
-    String total= (widget._currentList == null) ? "0.00" : widget._currentList.strCurrentTotal();
+    String total= (widget._currentList.isEmpty) ? "0.00" : widget._currentList[0].strCurrentTotal();
     TextStyle styleHowAmI = numBlack;
-    if(widget._currentList != null && widget._currentList.overage )
+    if(widget._currentList.isNotEmpty && widget._currentList[0].overage )
     {
       styleHowAmI = numRed;
     }
@@ -296,9 +298,9 @@ class _MyHomePageState extends State<MyHomePage> {
               CupertinoButton(
                   child: Icon(CupertinoIcons.add_circled),
                   onPressed:((){
-                    DetailPage.list = widget._currentList;
+                    DetailPage.list = widget._currentList[0];
                     DetailPage.item = null;
-                    Future <bool> holder = Navigator.push(context,
+                    Navigator.push(context,
                       CupertinoPageRoute<bool>(
                         maintainState: false,
                         fullscreenDialog: false,
@@ -309,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       if(saved == true)
                       {
                         print("saved");
-                        widget._currentList.load().then((bupkis){
+                        widget._currentList[0].load().then((bupkis){
                           setState((){
                             //widget._currentList.primeReload();
                           });
@@ -337,7 +339,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: rowContent
           );
         }
-        RelListItem itemLine = widget._currentList.getIthItem(index);
+        RelListItem itemLine = widget._currentList[0].getIthItem(index);
 
         /*
         return CupertinoButton(
@@ -371,7 +373,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     itemLine.visible = false;
                     updateItemStatus(itemLine).then((bupkis) async {
-                      await widget._currentList.load();
+                      await widget._currentList[0].load();
                       setState((){
                         //widget._currentList.primeReload();
                       });
@@ -393,7 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: ((value) {
                 itemLine.gotIt = value;
                 updateItemStatus(itemLine).then((bupkis) async {
-                  await widget._currentList.load();
+                  await widget._currentList[0].load();
                   setState(() {
 
                   });
@@ -426,9 +428,9 @@ class _MyHomePageState extends State<MyHomePage> {
           CupertinoButton(
               child:Icon(CupertinoIcons.forward),
               onPressed:((){
-                DetailPage.list = widget._currentList;
+                DetailPage.list = widget._currentList[0];
                 DetailPage.item = itemLine;
-                Future <bool> holder = Navigator.push(context,
+                Navigator.push(context,
                     CupertinoPageRoute<bool>(
                         maintainState: false,
                         fullscreenDialog: false,
@@ -440,7 +442,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   {
                     print("saved");
 
-                    widget._currentList.load().then((bupkis){
+                    widget._currentList[0].load().then((bupkis){
                       setState((){
                      //   widget._currentList.primeReload();
                       });
