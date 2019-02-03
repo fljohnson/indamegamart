@@ -239,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   Widget itemsList()
   {
-    if(widget._currentList == null)
+    if(widget._currentList.isEmpty)
       {
         return Text("");
       }
@@ -282,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children:headerContent
     );
 
-    int numrows = widget._currentList.length;
+    int numrows = widget._currentList[0].length;
     if(this.editMode)
     {
       numrows += 1;
@@ -292,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
       itemCount:numrows,
       itemBuilder: ((context,index){
         List<Widget> rowContent = [];
-        if(index == widget._currentList.length && this.editMode)
+        if(index == widget._currentList[0].length && this.editMode)
         {
           rowContent.add(
               CupertinoButton(
@@ -552,7 +552,7 @@ class _MyHomePageState extends State<MyHomePage> {
           navigationBar:CupertinoNavigationBar(
             middle:Text(widget.title),
             backgroundColor:Colors.white,
-            trailing:(widget._currentList != null) ? CupertinoButton(
+            trailing:(widget._currentList.isNotEmpty) ? CupertinoButton(
               child:Text(this.editMode ? "Done":"Edit"),
               onPressed: ((){
                 setState((){

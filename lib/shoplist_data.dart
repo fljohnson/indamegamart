@@ -706,7 +706,7 @@ Future<void> getDatabase() async
   String path = join(databasesPath, 'demo.db');
   if(debugging)
   {
-    //await deleteDatabase(path);
+    await deleteDatabase(path);
   }
 
 
